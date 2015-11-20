@@ -2,5 +2,5 @@
  * @module gulp-natron
  */
 export {task} from "natron-core";
-export {runAsGulpTask, createContext} from "./gulp";
+export {gulpTask, gulpContext} from "./gulp";
 export {defer} from "./promise";
