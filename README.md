@@ -50,23 +50,25 @@ greetTask.meta = {
 };
 
 gulp.task("greet", function () {
-  return natron.runAsGulpTask(greetTask, "World");
+  return natron.gulpTask(greetTask)("World");
 });
 
 gulp.task("greet-delay", function () {
-  return natron.runAsGulpTask(greetTask, "World", 1000);
+  return natron.gulpTask(greetTask)("World", 1000);
 });
 ```
 
 ```
 $ gulp greet-delay
-[14:23:02] Using gulpfile ~/gulpfile.js
-[14:23:02] Starting 'greet-delay'...
-[14:23:02] Starting ':greet'...
+[11:15:00] Using gulpfile ~/gulpfile.js
+[11:15:00] Starting 'greet-delay'...
+[11:15:00] Starting '<TaskSequence_0>'...
+[11:15:00] Starting ':greet'...
 Hello World.
-[14:23:03] Finished ':greet' after 1 s
-[14:23:03] Starting ':message'...
+[11:15:01] Finished ':greet' after 1 s
+[11:15:01] Starting ':message'...
 Thanks for waiting. Goodbye.
-[14:23:03] Finished ':message' after 578 μs
-[14:23:03] Finished 'greet-delay' after 1.02 s
+[11:15:01] Finished ':message' after 436 μs
+[11:15:01] Finished '<TaskSequence_0>' after 1.01 s
+[11:15:01] Finished 'greet-delay' after 1.01 s
 ```
