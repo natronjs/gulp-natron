@@ -7,8 +7,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.runAsGulpTask = runAsGulpTask;
-exports.createContext = createContext;
+exports.gulpTask = gulpTask;
+exports.gulpContext = gulpContext;
 
 var _events = require("events");
 
@@ -22,65 +22,71 @@ var _prettyHrtime2 = _interopRequireDefault(_prettyHrtime);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var hrtimeMap = new WeakMap();
-
-var anonymous = {
+var HRTimer = {
   __map__: new WeakMap(),
-  getName: function getName(e, o) {
+  time: function time(e) {
+    this.__map__.set(e, process.hrtime());
+  },
+  prettyDiff: function prettyDiff(e) {
+    var time = this.__map__.get(e);
+    return (0, _prettyHrtime2.default)(time && process.hrtime(time));
+  }
+};
+
+var NameHelper = {
+  __map__: new WeakMap(),
+  getName: function getName(e) {
+    if (e.task.name) {
+      return ":" + e.task.name;
+    }
+    return this.getAnonymousName(e);
+  },
+  getAnonymousName: function getAnonymousName(e) {
     var prototype = Object.getPrototypeOf(e.task);
     var className = prototype.constructor.name;
     var i = this.__map__.get(e);
     if (i === undefined) {
-      i = o.c++;
+      i = e.context.gulpMeta.ac++;
       this.__map__.set(e, i);
     }
     return "<" + className + "_" + i + ">";
   }
 };
 
-function runAsGulpTask(thing) {
-  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
-  }
+var eventAggregator = new _events.EventEmitter();
 
-  return (0, _natronCore.task)(thing).runWithContext(createContext({ args: args }));
+eventAggregator.on("start", function (e) {
+  var name = NameHelper.getName(e);
+  (0, _gulpUtil.log)("Starting '" + _gulpUtil.colors.cyan(name) + "'...");
+  HRTimer.time(e);
+});
+
+eventAggregator.on("finish", function (e) {
+  var diff = HRTimer.prettyDiff(e);
+  var name = NameHelper.getName(e);
+  (0, _gulpUtil.log)("Finished '" + _gulpUtil.colors.cyan(name) + "' after " + _gulpUtil.colors.magenta(diff));
+});
+
+eventAggregator.on("error", function (e) {
+  var diff = HRTimer.prettyDiff(e);
+  var name = NameHelper.getName(e);
+  (0, _gulpUtil.log)("'" + _gulpUtil.colors.cyan(name) + "' " + _gulpUtil.colors.red("errored after") + " " + _gulpUtil.colors.magenta(diff));
+});
+
+function gulpTask(thing, meta) {
+  var task_ = (0, _natronCore.task)(thing, meta);
+  return function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return task_.runWithContext(gulpContext({ args: args }));
+  };
 }
 
-function createContext(init) {
-  var eventAggregator = new _events.EventEmitter();
-  var context = _extends({ eventAggregator: eventAggregator }, init);
-  var o = { c: 0 };
-
-  eventAggregator.on("start", function (e) {
-    var task = e.task;
-    var context = e.context;
-
-    if (context.stack.length === 1) {
-      return;
-    }
-    var name = ":" + task.name;
-    if (!name) {
-      name = anonymous.getName(e, o);
-    }
-    (0, _gulpUtil.log)("Starting '" + _gulpUtil.colors.cyan(name) + "'...");
-    hrtimeMap.set(e, process.hrtime());
-  });
-
-  eventAggregator.on("finish", function (e) {
-    var task = e.task;
-    var context = e.context;
-
-    if (context.stack.length === 1) {
-      return;
-    }
-    var time = hrtimeMap.get(e);
-    var diff = (0, _prettyHrtime2.default)(time && process.hrtime(time));
-    var name = ":" + task.name;
-    if (!name) {
-      name = anonymous.getName(e, o);
-    }
-    (0, _gulpUtil.log)("Finished '" + _gulpUtil.colors.cyan(name) + "' after " + _gulpUtil.colors.magenta(diff));
-  });
-
-  return _natronCore.TaskContext.create(context);
+function gulpContext(init) {
+  return _natronCore.TaskContext.create(_extends({
+    eventAggregator: eventAggregator,
+    gulpMeta: { ac: 0 }
+  }, init));
 }

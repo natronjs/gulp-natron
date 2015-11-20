@@ -1,6 +1,6 @@
 {
   "name": "gulp-natron",
-  "version": "0.2.0-alpha.1",
+  "version": "0.2.0-beta.2",
   "description": "Gulp with Natron",
   "keywords": [
     "gulpplugin",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "gulp-util": "^3.0.0",
-    "natron-core": "^0.2.0-alpha",
+    "natron-core": "^0.2.0-beta",
     "pretty-hrtime": "^1.0.0"
   },
   "devDependencies": {

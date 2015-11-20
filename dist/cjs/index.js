@@ -15,16 +15,16 @@ Object.defineProperty(exports, "task", {
 
 var _gulp = require("./gulp");
 
-Object.defineProperty(exports, "runAsGulpTask", {
+Object.defineProperty(exports, "gulpTask", {
   enumerable: true,
   get: function get() {
-    return _gulp.runAsGulpTask;
+    return _gulp.gulpTask;
   }
 });
-Object.defineProperty(exports, "createContext", {
+Object.defineProperty(exports, "gulpContext", {
   enumerable: true,
   get: function get() {
-    return _gulp.createContext;
+    return _gulp.gulpContext;
   }
 });
 
