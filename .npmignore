@@ -6,6 +6,7 @@
 /build
 /test
 /.editorconfig
+/.eslintrc
 /.natronrc
 /.travis.yml
 /*.tgz
