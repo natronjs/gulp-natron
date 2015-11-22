@@ -1,6 +1,6 @@
 /**
  * @module gulp-natron
  */
-export {task} from "natron-core";
+export {task, promisify, defer, Task, TaskContext} from "natron-core";
+export {merge, awaitAll, fromPromise, transformer, Transformer} from "natron-vinyl";
 export {gulpTask, gulpContext} from "./gulp";
-export {defer} from "./promise";
