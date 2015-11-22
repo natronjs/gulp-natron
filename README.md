@@ -15,12 +15,16 @@
 [npm-url]: https://npmjs.org/package/gulp-natron
 [dlm-img]: https://img.shields.io/npm/dm/gulp-natron.svg
 [readme-img]: https://img.shields.io/badge/read-me-orange.svg
-[readme-url]: https://natron.readme.io/
+[readme-url]: https://natron.readme.io/docs/module-gulp-natron
 
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/natronjs/natron
 
 This module is part of [Natron][natron-url].
+
+## Documentation
+
+See the [documentation for gulp-natron][readme-url].
 
 ## Usage
 
